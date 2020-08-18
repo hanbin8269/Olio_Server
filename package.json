@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "cross-env NODE_PATH=src ts-node src/server.ts",
-    "dev": "cross-env NODE_PATH=src nodemon --exec ts-node src/server.ts"
+    "dev": "cross-env NODE_PATH=src nodemon --exec ts-node src/server.ts",
+    "pretty": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
     "cross-env": "^7.0.2",
@@ -25,6 +26,7 @@
     "@types/node": "^14.6.0",
     "@types/sequelize": "^4.28.9",
     "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }
