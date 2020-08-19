@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=git,node,code
 
 ### Code ###
-.vscode/*
+.vscode
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -135,3 +135,5 @@ dist
 .vscode-test
 
 # End of https://www.toptal.com/developers/gitignore/api/git,node,code
+
+Studio/
