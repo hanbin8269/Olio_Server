@@ -4,14 +4,14 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model user {
   userId    Int      @default(autoincrement()) @id
   createdAt DateTime @default(now())
+  email     String
   password  String
-  email     String   @unique
 }
 
 model migration {
