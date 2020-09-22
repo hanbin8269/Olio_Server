@@ -1,3 +1,5 @@
 # Prisma Migrate lockfile v1
 
 20200819021234-init
+20200819102214-identify-by-email
+20200820024630-make-email-unique
