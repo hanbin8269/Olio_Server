@@ -22,14 +22,18 @@
   },
   "devDependencies": {
     "@prisma/cli": "^2.5.0",
+    "@types/jest": "^26.0.14",
     "@types/joi": "^14.3.4",
     "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-helmet": "^5.2.0",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^14.6.0",
+    "jest": "^26.5.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
+    "supertest": "^5.0.0",
+    "ts-jest": "^26.4.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   }
