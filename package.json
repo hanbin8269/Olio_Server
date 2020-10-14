@@ -7,7 +7,8 @@
   "scripts": {
     "start": "cross-env NODE_PATH=src ts-node src/server.ts",
     "dev": "cross-env NODE_PATH=src nodemon --exec ts-node src/server.ts",
-    "pretty": "prettier --write \"src/**/*.ts\""
+    "pretty": "prettier --write \"src/**/*.ts\"",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^2.5.0",
@@ -22,15 +23,49 @@
   },
   "devDependencies": {
     "@prisma/cli": "^2.5.0",
+    "@types/jest": "^26.0.14",
     "@types/joi": "^14.3.4",
     "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-helmet": "^5.2.0",
     "@types/koa-router": "^7.4.1",
     "@types/node": "^14.6.0",
+    "@types/supertest": "^2.0.10",
+    "jest": "^26.5.3",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
+    "supertest": "^5.0.0",
+    "ts-jest": "^26.4.1",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "ts",
+      "tsx"
+    ],
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{ts,js}",
+      "!**/node_modules/**",
+      "!**/build/**",
+      "!**/coverage/**"
+    ],
+    "transform": {
+      "\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "coverageReporters": [
+      "text",
+      "text-summary"
+    ],
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js|ts)x?$",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/build/",
+      "/coverage/"
+    ]
   }
 }
