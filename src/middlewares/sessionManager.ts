@@ -6,14 +6,16 @@ import { PrismaClient } from '@prisma/client';
 const sessionManager = async (ctx: Context, next: Function) => {
   const prisma = new PrismaClient();
 
-  const user = await prisma.user.findOne({
-    where: {
-      userId: Number(ctx.header.authorization),
-    },
-  });
+  if (ctx.header.authorization) {
+    const user = await prisma.user.findOne({
+      where: {
+        userId: Number(ctx.header.authorization),
+      },
+    });
 
-  if (user) {
-    ctx.user = user;
+    if (user) {
+      ctx.user = user;
+    }
   }
 
   await next();
