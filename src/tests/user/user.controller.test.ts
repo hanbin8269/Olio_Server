@@ -41,3 +41,32 @@ describe('login', () => {
     expect(response.status).toBe(400);
   });
 });
+
+describe('register', () => {
+  it('should be success with correct form', async () => {
+    const response = await request(app.callback()).post('/api/user/v1/').send({
+      email: 'gksqls0128@gmail.com',
+      password: '0128gksqls',
+    });
+
+    expect(response.status).toBe(201);
+  });
+
+  it('should be failed with incorrect email form', async () => {
+    const response = await request(app.callback()).post('/api/user/v1/').send({
+      email: 'gksqls0128com',
+      password: '0128gksqls',
+    });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should be failed with duplicated account', async () => {
+    const response = await request(app.callback()).post('/api/user/v1/').send({
+      email: 'hanbin8269@gmail.com',
+      password: '0128gksqls',
+    });
+
+    expect(response.status).toBe(400);
+  });
+});
