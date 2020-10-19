@@ -6,6 +6,9 @@ on:
     branches: [master, develop]
 
 jobs:
-  steps:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
     - name: Run test code
       run: yarn jest
+  
