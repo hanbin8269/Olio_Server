@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import app from '../../app';
 
 let mockUserToken: string;
+let mockProjectId: number;
 
 const mockUser1 = {
   email: 'mockuser12341@example.com',
@@ -15,20 +16,29 @@ const mockUser2 = {
   password: 'mypassword',
 };
 
+const mockProject = {
+  title: 'My First Project',
+  contents: 'This is a project for testing',
+};
+
 beforeAll(async () => {
   require('../../server');
 
   const user1 = request(app.callback()).post('/api/user/v1').send(mockUser1);
-  const user2 = request(app.callback()).post('/api/user/v1').send(mockUser1);
+  const user2 = request(app.callback()).post('/api/user/v1').send(mockUser2);
   await Promise.all([user1, user2]);
 
   mockUserToken = (
     await request(app.callback()).post('/api/user/v1/login').send(mockUser1)
-  ).body.userId;
+  ).body.id;
 });
 
 afterAll(async () => {
   const prisma = new PrismaClient();
+
+  await prisma.project.delete({
+    where: { projectId: mockProjectId },
+  });
 
   await prisma.user.deleteMany({
     where: {
@@ -37,17 +47,21 @@ afterAll(async () => {
   });
 });
 
-describe('project creation', async () => {
-  const mockProject = {
-    projectId: 99999,
-    title: 'My First Project',
-    contents: 'This is a project for testing',
-  };
+describe('project creation', () => {
+  it('should create project', async () => {
+    const response = await request(app.callback())
+      .post('/api/project')
+      .set('authorization', mockUserToken)
+      .send(mockProject);
+
+    expect(response.status).toBe(201);
+    mockProjectId = response.body.projectId;
+  });
 
   it('should fail with invalid bodyForm', async () => {
     const response = await request(app.callback())
       .post('/api/project')
-      .set('Authorization', mockUserToken)
+      .set('authorization', mockUserToken)
       .send({ contents: 'posting without title' });
 
     expect(response.status).toBe(400);
@@ -58,16 +72,6 @@ describe('project creation', async () => {
       .post('/api/project')
       .send(mockProject);
 
-    expect(response.status).toBe(403);
-  });
-
-  it('should create project', async () => {
-    const response = await request(app.callback())
-      .post('/api/project')
-      .set('Authorization', mockUserToken)
-      .send(mockProject);
-
-    expect(response.status).toBe(201);
-    expect(response.body.projectId).toBe(mockProject.projectId);
+    expect(response.status).toBe(401);
   });
 });
