@@ -6,6 +6,10 @@ dotenv.config();
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
-});
+if (process.env.JEST_WORKER_ID !== undefined) {
+  console.log(`Test server is running`);
+} else {
+  app.listen(port, () => {
+    console.log(`Server is running at port ${port}`);
+  });
+}
