@@ -17,13 +17,25 @@ model user {
 }
 
 model project {
-  projectId    Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
+  projectId    Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
   title        String
   contents     String?
-  owner        user?    @relation("owned", fields: [ownerId], references: [userId])
+  owner        user?      @relation("owned", fields: [ownerId], references: [userId])
   ownerId      Int?
-  participants user[]   @relation("participated")
+  participants user[]     @relation("participated")
+  tags         tag[]      @relation("tags")
+  languages    language[] @relation("languages")
+}
+
+model tag {
+  name           String    @id
+  taggedProjects project[] @relation("tags")
+}
+
+model language {
+  name         String    @id
+  usedProjects project[] @relation("languages")
 }
 
 model migration {
