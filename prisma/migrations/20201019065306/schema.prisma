@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 model user {
@@ -12,6 +12,7 @@ model user {
   createdAt           DateTime  @default(now())
   password            String
   email               String    @unique
+  authority           Int       @default(1)
   projects            project[] @relation("owned")
   participatedProject project[] @relation("participated")
 }
