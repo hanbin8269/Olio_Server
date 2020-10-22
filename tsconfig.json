@@ -9,7 +9,7 @@
       "strictPropertyInitialization": false,
       "moduleResolution": "Node",
       "sourceMap": true,
-      "baseUrl": ".",
+      "baseUrl": "./src",
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true
     },
