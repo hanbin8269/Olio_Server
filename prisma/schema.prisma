@@ -13,6 +13,7 @@ model user {
   createdAt           DateTime  @default(now())
   password            String
   email               String    @unique
+  authority           Int       @default(1)
   projects            project[] @relation("owned")
   participatedProject project[] @relation("participated")
 }
