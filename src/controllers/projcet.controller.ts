@@ -2,10 +2,9 @@ import { Context } from 'koa';
 import { PrismaClient } from '@prisma/client';
 
 import * as Joi from 'joi';
-import { valid } from 'joi';
 
 export const createProject = async (ctx: Context) => {
-  // check request body form
+  // check request body form --------------------------------------------------
   const bodyForm = Joi.object().keys({
     title: Joi.string().required(),
     contents: Joi.string(),
@@ -14,11 +13,15 @@ export const createProject = async (ctx: Context) => {
     participants: Joi.array().items(Joi.string()),
   });
 
-  ctx.assert(!bodyForm.validate(ctx.request.body).error, 400);
+  ctx.assert(
+    !bodyForm.validate(ctx.request.body).error,
+    400,
+    'invalid body form'
+  );
 
   const prisma = new PrismaClient();
 
-  // check if languages are existing
+  // check if languages are existing ------------------------------------------
   const languages: string[] = ctx.request.body.languages;
   if (languages) {
     const langResult = await Promise.all(
@@ -43,11 +46,11 @@ export const createProject = async (ctx: Context) => {
     ctx.assert(
       wrongLanguages.length == 0,
       400,
-      `"${wrongLanguages.join(', ')}" 존재하지 않는 언어입니다.`
+      `"${wrongLanguages.join('", "')}" 존재하지 않는 언어입니다.`
     );
   }
 
-  // check if participants are existing
+  // check if participants are existing ---------------------------------------
   const participants: string[] = ctx.request.body.participants;
   if (participants) {
     const userResult = await Promise.all(
@@ -72,31 +75,31 @@ export const createProject = async (ctx: Context) => {
     ctx.assert(
       wrongEmails.length == 0,
       400,
-      `"${wrongEmails.join(', ')}" 존재하지 않는 이메일입니다.`
+      `"${wrongEmails.join('", "')}" 존재하지 않는 이메일입니다.`
     );
   }
 
-  // map itmes to create project
-  const mappedTags = ctx.request.body.tags.map((tag: string) => {
+  // map itmes to create project ----------------------------------------------
+  const mappedTags = (ctx.request.body.tags || []).map((tag: string) => {
     return {
       where: { name: tag },
       create: { name: tag },
     };
   });
 
-  const mappedLangs = languages.map((language) => {
+  const mappedLangs = (languages || []).map((language) => {
     return {
       name: language,
     };
   });
 
-  const mappedParticipants = participants.map((email) => {
+  const mappedParticipants = (participants || []).map((email) => {
     return {
       email: email,
     };
   });
 
-  // create project
+  // create project -----------------------------------------------------------
   const newProject = await prisma.project.create({
     data: {
       title: ctx.request.body.title,
