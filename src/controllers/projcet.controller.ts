@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 
 import * as Joi from 'joi';
 
+const prisma = new PrismaClient();
+
 export const createProject = async (ctx: Context) => {
   // check request body form --------------------------------------------------
   const bodyForm = Joi.object().keys({
@@ -18,8 +20,6 @@ export const createProject = async (ctx: Context) => {
     400,
     'invalid body form'
   );
-
-  const prisma = new PrismaClient();
 
   // check if languages are existing ------------------------------------------
   const languages: string[] = ctx.request.body.languages;
@@ -123,4 +123,37 @@ export const createProject = async (ctx: Context) => {
   ctx.body = {
     projectId: newProject.projectId,
   };
+};
+
+export const deleteProject = async (ctx: Context) => {
+  // check query parameter type -----------------------------------------------
+  // check projectId exists
+  ctx.assert(ctx.params.project, 400);
+
+  const projectId = Number(ctx.params.project);
+
+  // check projectId is number
+  ctx.assert(projectId, 400);
+
+  // get project to delete ----------------------------------------------------
+  const project = await prisma.project.findOne({
+    where: {
+      projectId: projectId,
+    },
+  });
+
+  // check project exists
+  ctx.assert(project, 400);
+
+  // check project can be deleted
+  ctx.assert(project.ownerId == ctx.user.userId, 403);
+
+  // delete project -----------------------------------------------------------
+  await prisma.project.delete({
+    where: {
+      projectId: project.projectId,
+    },
+  });
+
+  ctx.status = 204;
 };
