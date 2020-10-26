@@ -28,6 +28,8 @@ const mockProject = {
   participants: [mockUser2.email],
 };
 
+const prisma = new PrismaClient();
+
 beforeAll(async () => {
   require('../../server');
 
@@ -44,8 +46,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  const prisma = new PrismaClient();
-
   await prisma.user.deleteMany({
     where: {
       OR: [{ email: mockUser1.email }, { email: mockUser2.email }],
@@ -65,8 +65,6 @@ describe('project creation', () => {
     expect(response.status).toBe(201);
 
     // check if tags are created ----------------------------------------------
-    const prisma = new PrismaClient();
-
     const tagResult = await Promise.all(
       mockProject.tags.map((tag) => {
         return prisma.tag.findMany({
@@ -151,7 +149,6 @@ describe('project creation', () => {
 
 describe('project deletion', () => {
   let projectsToDelete: project[] = [];
-  const prisma = new PrismaClient();
 
   beforeEach(async () => {
     projectsToDelete.push(
