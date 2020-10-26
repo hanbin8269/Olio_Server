@@ -2,6 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import * as request from 'supertest';
 import app from '../../app';
 
+interface project {
+  projectId: number;
+  title: string;
+}
+
 let mockUserToken: string;
 
 const mockUser1 = {
@@ -139,5 +144,63 @@ describe('project creation', () => {
     // check if failed with 'no token' ----------------------------------------
     expect(response.status).toBe(401);
     expect(response.body.message).toBe('Unauthorized');
+  });
+});
+
+describe('project deletion', () => {
+  let projectsToDelete: project[] = [];
+  const prisma = new PrismaClient();
+
+  beforeEach(async () => {
+    projectsToDelete.push(
+      await prisma.project.create({
+        data: {
+          title: 'failed project',
+          contents: 'delete me',
+        },
+      })
+    );
+  });
+
+  afterAll(async () => {
+    await prisma.project.delete({
+      where: {
+        projectId: projectsToDelete[0].projectId,
+      },
+    });
+  });
+
+  it('should delete project', async () => {
+    const project = projectsToDelete.pop();
+
+    const response = await request(app.callback())
+      .delete(`/api/project/${project.projectId}`)
+      .set('authorization', mockUserToken);
+
+    expect(response.status).toBe(204);
+  });
+
+  it('should not delete project with irrelevant user', async () => {
+    const project = projectsToDelete.pop();
+
+    const response = await request(app.callback())
+      .delete(`/api/project/${project.projectId}`)
+      .set('authorization', mockUserToken);
+
+    expect(response.status).toBe(403);
+
+    await prisma.project.delete({
+      where: {
+        projectId: project.projectId,
+      },
+    });
+  });
+
+  it('should reject not existing project', async () => {
+    const response = await request(app.callback())
+      .delete('/api/project/not-a-number')
+      .set('authorization', mockUserToken);
+
+    expect(response.status).toBe(400);
   });
 });
