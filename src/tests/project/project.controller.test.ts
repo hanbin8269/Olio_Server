@@ -8,6 +8,7 @@ interface project {
 }
 
 let mockUserToken: string;
+let mockUserToken2: string;
 
 const mockUser1 = {
   email: 'mockuser12341@example.com',
@@ -34,11 +35,12 @@ beforeAll(async () => {
   const user2 = request(app.callback()).post('/api/user/v1').send(mockUser2);
   await Promise.all([user1, user2]);
 
-  const token = await request(app.callback())
-    .post('/api/user/v1/login')
-    .send(mockUser1);
+  const t1 = request(app.callback()).post('/api/user/v1/login').send(mockUser1);
+  const t2 = request(app.callback()).post('/api/user/v1/login').send(mockUser2);
+  const tokens = await Promise.all([t1, t2]);
 
-  mockUserToken = token.body.id;
+  mockUserToken = tokens[0].body.id;
+  mockUserToken2 = tokens[1].body.id;
 });
 
 afterAll(async () => {
@@ -157,6 +159,11 @@ describe('project deletion', () => {
         data: {
           title: 'failed project',
           contents: 'delete me',
+          owner: {
+            connect: {
+              email: mockUser1.email,
+            },
+          },
         },
       })
     );
@@ -185,7 +192,7 @@ describe('project deletion', () => {
 
     const response = await request(app.callback())
       .delete(`/api/project/${project.projectId}`)
-      .set('authorization', mockUserToken);
+      .set('authorization', mockUserToken2);
 
     expect(response.status).toBe(403);
 
