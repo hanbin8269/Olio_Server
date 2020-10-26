@@ -2,16 +2,18 @@ import * as request from 'supertest';
 import app from '../../app';
 import { PrismaClient } from '@prisma/client';
 
-let mockUserToken;
-let mockUserId;
+let mockUserToken: string;
+let mockUserId: number;
 
 beforeAll(async () => {
+  require('../../server');
+
   const mockUser1 = {
-    email: 'mockuser1@gmail.com',
+    email: 'mockuser1@example.com',
     password: '1234',
   };
   const mockUser2 = {
-    email: 'mockuser2@gmail.com',
+    email: 'mockuser2@example.com',
     password: '5678',
   };
 
@@ -28,13 +30,11 @@ beforeAll(async () => {
 
   const user = await prisma.user.findOne({
     where: {
-      email: 'mockuser2@gmail.com',
+      email: 'mockuser2@example.com',
     },
   });
 
   mockUserId = user.userId;
-
-  require('../../server');
 });
 
 describe('Follow works', () => {

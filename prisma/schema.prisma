@@ -14,6 +14,8 @@ model user {
   email               String    @unique
   projects            project[] @relation("owned")
   participatedProject project[] @relation("participated")
+  followedBy          user[]    @relation("relationship", references: [userId])
+  following           user[]    @relation("relationship", references: [userId])
 }
 
 model project {
