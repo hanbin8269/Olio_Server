@@ -137,3 +137,4 @@ dist
 # End of https://www.toptal.com/developers/gitignore/api/git,node,code
 
 Studio/
+migrations/
