@@ -26,6 +26,15 @@ model project {
   participants user[]   @relation("participated")
 }
 
+model Portfolio {
+  projectId Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  title     String
+  owner     user      @relation("owned", fields: [ownerId], references: [userId])
+  ownerId   Int
+  projects  project[] @relation("participated")
+}
+
 model migration {
   revision           Int       @id @default(autoincrement())
   name               String
