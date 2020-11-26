@@ -27,12 +27,12 @@ model project {
 }
 
 model Portfolio {
-  projectId Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  title     String
-  owner     user      @relation("owned", fields: [ownerId], references: [userId])
-  ownerId   Int
-  projects  project[] @relation("participated")
+  portfolioId Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  title       String
+  owner       user      @relation("owned", fields: [ownerId], references: [userId])
+  ownerId     Int
+  projects    project[] @relation("participated")
 }
 
 model migration {
