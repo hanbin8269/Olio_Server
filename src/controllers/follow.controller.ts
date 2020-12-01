@@ -12,6 +12,15 @@ export const following = async (ctx: Context) => {
 
   ctx.assert(!bodyForm.validate(ctx.request.body).error, 400);
 
+  //check if user is existing
+  const checkUser = prisma.user.findOne({
+    where: {
+      userId: ctx.request.body.userId,
+    },
+  });
+
+  ctx.assert(!checkUser, 400);
+
   await prisma.user.update({
     where: {
       userId: ctx.user.userId,
@@ -25,12 +34,16 @@ export const following = async (ctx: Context) => {
     },
   });
 
-  //check if user is existing
-  const checkUser = prisma.user.findOne({
+  await prisma.user.update({
     where: {
       userId: ctx.request.body.userId,
     },
+    data: {
+      followedBy: {
+        connect: {
+          userId: ctx.user.userId,
+        },
+      },
+    },
   });
-
-  ctx.assert(!checkUser, 400);
 };
