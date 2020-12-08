@@ -70,3 +70,9 @@ export const createPortfolio = async (ctx: Context) => {
     portfolioId: newPortfolio.portfolioId,
   };
 };
+
+export const readPortfolio = async (ctx: Context) => {};
+
+export const updatePortfolio = async (ctx: Context) => {};
+
+export const deletePortfolio = async (ctx: Context) => {};
