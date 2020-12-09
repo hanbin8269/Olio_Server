@@ -7,32 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  userId              Int       @id @default(autoincrement())
-  createdAt           DateTime  @default(now())
+model User {
+  userId              Int         @id @default(autoincrement())
+  createdAt           DateTime    @default(now())
   password            String
-  email               String    @unique
-  projects            project[] @relation("owned")
-  participatedProject project[] @relation("participated")
+  email               String      @unique
+  projects            Project[]   @relation("owned")
+  participatedProject Project[]   @relation("participated")
+  Portfolio           Portfolio[]
+
+  @@map("user")
 }
 
-model project {
+model Project {
   projectId    Int      @id @default(autoincrement())
   createdAt    DateTime @default(now())
   title        String
   contents     String?
-  owner        user     @relation("owned", fields: [ownerId], references: [userId])
+  owner        User     @relation("owned", fields: [ownerId], references: [userId])
   ownerId      Int
-  participants user[]   @relation("participated")
-}
+  participants User[]   @relation("participated")
 
-model Portfolio {
-  portfolioId Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  title       String
-  owner       user      @relation("owned", fields: [ownerId], references: [userId])
-  ownerId     Int
-  projects    project[] @relation("participated")
+  @@map("project")
 }
 
 model migration {
