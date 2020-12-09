@@ -31,6 +31,41 @@ model Project {
   @@map("project")
 }
 
+model Portfolio {
+  portfolioId  Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  title        String
+  owner        User          @relation(fields: [userId], references: [userId])
+  userId       Int
+  introduce    String
+  projects     Project[]     @relation("participated")
+  certificates Certificate[]
+  websites     Website[]
+  awards       Award[]
+}
+
+model Website {
+  websiteId Int         @id @default(autoincrement())
+  link      String
+  Portfolio Portfolio[]
+}
+
+model Award {
+  awardId   Int         @id @default(autoincrement())
+  title     String
+  content   String
+  gotAt     DateTime
+  Portfolio Portfolio[]
+}
+
+model Certificate {
+  certificateId Int         @id @default(autoincrement())
+  title         String
+  content       String
+  gotAt         DateTime
+  Portfolio     Portfolio[]
+}
+
 model migration {
   revision           Int       @id @default(autoincrement())
   name               String
